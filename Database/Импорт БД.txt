@@ -1,0 +1,73 @@
+Перенос базы данных PostgreSQL через pgAdmin 4
+
+У тебя уже есть:
+
+- База для импорта: `shop_db`
+- SQL-файл: `C:\Users\grtgr\Desktop\my_database.sql`
+- Пользователь PostgreSQL: `postgres`
+
+Шаг 1. Подключись к базе данных
+
+1. Открой pgAdmin 4.
+2. В левой панели раскрой Servers → PostgreSQL → Databases.
+3. Найди базу `shop_db`.
+4. Нажми на неё правой кнопкой мыши.
+5. Выбери PSQL Tool.
+
+Если PostgreSQL запрашивает пароль, введи пароль пользователя `postgres`.
+
+Шаг 2. Импортируй SQL-файл
+
+В открывшемся терминале введи:
+
+Команда импорта
+
+
+```
+\i 'C:/Users/areis/Desktop/my_database.sql'
+```
+
+Нажми Enter. PostgreSQL начнёт создавать таблицы и загружать данные.
+
+Шаг 3. Проверь импорт
+
+В левой панели pgAdmin открой:
+
+`shop_db → Schemas → public → Tables`
+
+Нажми Refresh, чтобы обновить список.
+
+Должны появиться шесть таблиц: `clients`, `orders`, `password_reset_requests`, `products`, `roles`, `users`.
+
+Шаг 4. Проверь записи
+
+Открой Query Tool для базы `shop_db` и выполни:
+
+```
+SELECT * FROM public.clients;
+```
+
+Если отображаются пять клиентов, данные успешно загружены.
+
+Можно проверить все таблицы сразу:
+
+```
+SELECT 'clients' AS table_name, COUNT(*) FROM public.clients
+UNION ALL
+SELECT 'orders', COUNT(*) FROM public.orders
+UNION ALL
+SELECT 'products', COUNT(*) FROM public.products
+UNION ALL
+SELECT 'roles', COUNT(*) FROM public.roles
+UNION ALL
+SELECT 'users', COUNT(*) FROM public.users
+UNION ALL
+SELECT 'password_reset_requests', COUNT(*)
+FROM public.password_reset_requests;
+```
+
+Ожидаемый результат: 6 таблиц и 28 записей.
+
+Важно: если ты переносишь базу на другой компьютер, предварительно скопируй туда `my_database.sql` и укажи новый путь к нему. Импорт лучше выполнять в пустую базу под пользователем `postgres`.
+
+После этого база `shop_db` будет содержать структуру и данные из исходного SQL-файла.
